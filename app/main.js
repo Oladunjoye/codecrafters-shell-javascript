@@ -4,37 +4,23 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
- 
-const processInput = (input)=>{
-  if (input === 'exit'){
+
+rl.setPrompt('$')
+
+function processInput(input){
+  if(input === 'exit'){
     rl.close()
     return
   }
+  else if(input.startsWith('echo')){
+    console.log(input.slice(5))
+  }
+  else{
   console.log(`${input}: command not found`)
-   rl.question("$ ", (answer) => {
-  processInput(answer)
- });
-
+  }
+  rl.prompt()
 
 }
-// TODO: Uncomment the code below to pass the first stage
-rl.question("$ ", (answer) => {
-  processInput(answer)
- });
 
- // appendix
-
-//  import { createInterface } from "node:readline/promises";
-
-// const rl = createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
-
-// rl.setPrompt("$ ");
-// rl.prompt();
-
-// rl.on("line", async (line) => {
-//   console.log(`${line}: command not found`)
-//   rl.prompt()
-// })
+rl.prompt()
+rl.on('line', processInput)
