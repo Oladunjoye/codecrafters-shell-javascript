@@ -13,7 +13,7 @@ if (validCommands.includes(input)){
   console.log(`${input} is a shell builtin`)
 }
 else{
-  console.log(`${input}: command not found`)
+  console.log(`${input}: not found`)
 
 }
 
