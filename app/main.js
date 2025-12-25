@@ -16,5 +16,4 @@ const processInput = (input)=>{
 // TODO: Uncomment the code below to pass the first stage
  rl.question("$ ", (answer) => {
   processInput(answer)
-  rl.resume()
  });
