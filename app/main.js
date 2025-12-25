@@ -5,7 +5,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.setPrompt('$')
+rl.setPrompt('$ ')
 
 function processInput(input){
   if(input === 'exit'){
