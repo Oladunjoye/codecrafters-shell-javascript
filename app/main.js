@@ -7,6 +7,17 @@ const rl = readline.createInterface({
 
 rl.setPrompt('$ ')
 
+const validCommands =[ 'echo', 'type', 'exit']
+function handleTypeInput(input){
+if (validCommands.includes(input)){
+  console.log(`${input} is a shell builtin`)
+}
+else{
+  console.log(`${input}: command not found`)
+
+}
+
+}
 function processInput(input){
   if(input === 'exit'){
     rl.close()
@@ -14,6 +25,9 @@ function processInput(input){
   }
   else if(input.startsWith('echo')){
     console.log(input.slice(5))
+  }
+  else if(input.startsWith('type')){
+    handleTypeInput(input.slice(5))
   }
   else{
   console.log(`${input}: command not found`)
@@ -24,3 +38,5 @@ function processInput(input){
 
 rl.prompt()
 rl.on('line', processInput)
+
+
