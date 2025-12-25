@@ -6,6 +6,10 @@ const rl = readline.createInterface({
 });
  
 const processInput = (input)=>{
+  if (input === 'exit'){
+    rl.close()
+    return
+  }
   console.log(`${input}: command not found`)
    rl.question("$ ", (answer) => {
   processInput(answer)
@@ -17,3 +21,20 @@ const processInput = (input)=>{
 rl.question("$ ", (answer) => {
   processInput(answer)
  });
+
+ // appendix
+
+//  import { createInterface } from "node:readline/promises";
+
+// const rl = createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+// });
+
+// rl.setPrompt("$ ");
+// rl.prompt();
+
+// rl.on("line", async (line) => {
+//   console.log(`${line}: command not found`)
+//   rl.prompt()
+// })
