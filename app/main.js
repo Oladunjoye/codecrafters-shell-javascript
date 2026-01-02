@@ -1,5 +1,6 @@
 const readline = require("readline");
 const fs = require('fs')
+const path = require('path')
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -27,11 +28,11 @@ function validatePathType(command){
   }
 
 
-  const splitPath = pathEnv.split(':')
-  for (path of splitPath){
-    const pathExistsAndIsExecutable =  validatePathExistsAndIsExecutable(path + '/' + command)
+  const splitPath = pathEnv.split(path.delimiter)
+  for (let dir of splitPath){
+    const pathExistsAndIsExecutable =  validatePathExistsAndIsExecutable(dir + '/' + command)
     if(pathExistsAndIsExecutable){
-      console.log(`${command} is ${path}/${command}`)
+      console.log(`${command} is ${dir}/${command}`)
       return true
     }
   }
