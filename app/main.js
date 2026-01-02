@@ -19,7 +19,7 @@ function validatePathExistsAndIsExecutable(path){
   }
 }
 // PATH="/usr/bin:/usr/local/bin:$PATH" ./your_program.sh
-async function validatePathType(command){
+function validatePathType(command){
   const {PATH:pathEnv} = process.env
 
   if (!pathEnv){
@@ -29,7 +29,7 @@ async function validatePathType(command){
 
   const splitPath = pathEnv.split(':')
   for (path of splitPath){
-    const pathExistsAndIsExecutable =  validatePathExistsAndIsExecutable(path)
+    const pathExistsAndIsExecutable =  validatePathExistsAndIsExecutable(path + '/' + command)
     if(pathExistsAndIsExecutable){
       console.log(`${command} is ${path}/${command}`)
       return true
@@ -40,17 +40,15 @@ async function validatePathType(command){
 
 }
 
-function handleTypeInput(input){
+ function handleTypeInput(input){
 if (validCommands.includes(input)){
   console.log(`${input} is a shell builtin`)
 }
 else{
 
-  const validPath = validatePathType(input)
+  const validPath =  validatePathType(input)
 
-  if(validPath){
-    console.log(`${input} is ${validPath}`)
-  }else{
+  if(!validPath){
 
     console.log(`${input}: not found`)
   }
