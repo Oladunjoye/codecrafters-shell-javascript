@@ -1,6 +1,8 @@
 const readline = require("readline");
 const fs = require('fs')
-const path = require('path')
+const path = require('path');
+const {spawnSync} = require('child_process');
+const { argv0 } = require("process");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -38,15 +40,17 @@ function validatePathType(command) {
 
   const splitPath = pathEnv.split(path.delimiter)
   for (let dir of splitPath) {
-    const pathExistsAndIsExecutable = validatePathExistsAndIsExecutable(dir + '/' + command)
+    const fullPath =  dir + '/' + command
+    const pathExistsAndIsExecutable = validatePathExistsAndIsExecutable(fullPath)
     if (pathExistsAndIsExecutable) {
-      console.log(`${command} is ${dir}/${command}`)
-      return true
+      return fullPath
     }
   }
 
-  return false
+  return null
 }
+
+
 
 /**
  * Handles the 'type' builtin command. Reports if a command is a builtin or its PATH location.
@@ -60,7 +64,19 @@ function handleTypeInput(input) {
     const validPath = validatePathType(input)
     if (!validPath) {
       console.log(`${input}: not found`)
+    }else{
+      console.log(`${input} is ${validPath}`)
+
     }
+  }
+}
+
+function handleExecutePath({program, args}) {
+  const fullPath = validatePathType(program)
+  if(fullPath){
+   spawnSync(fullPath, args, {stdio:'inherit', argv0: program} )
+  }else{
+    handleInvalidCommand(program)
   }
 }
 
@@ -79,6 +95,7 @@ function handleInvalidCommand(input) {
  */
 function handleExit() {
   rl.close()
+  process.exit(0)
 }
 
 /**
@@ -94,7 +111,12 @@ function handleEchoInput(input) {
 const commandMap = {
   'echo': handleEchoInput,
   'type': handleTypeInput,
-  'exit': handleExit
+  'exit': handleExit,
+}
+
+function parseCommand(input) {
+  const [command, ...args] = input.split(' ')
+  return { command, args: args.join(' ') }
 }
 
 /**
@@ -103,15 +125,19 @@ const commandMap = {
  * @returns {void}
  */
 function processInput(input) {
-  const [command, ...args] = input.split(' ')
+  const { command, args } = parseCommand(input)
   const commandHandler = commandMap[command]
 
   if (commandHandler) {
-    commandHandler(args.join(' '))
-  } else {
+    commandHandler(args)
+  } else if(command){
+    handleExecutePath({program: command, args: args.split(' ')})
+  }
+  else {
     handleInvalidCommand(command)
   }
-  rl.prompt()
+
+    rl.prompt()
 }
 
 rl.prompt()
